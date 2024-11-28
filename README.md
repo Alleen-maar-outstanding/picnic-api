@@ -1,14 +1,17 @@
 # 🚀 Picnic API
 
-## Installation
+## 🌐 Installation
 
 ### Local
+
+Create an .env file in the root directory with a:
+`DATABASE_URL=`
+This is the DB connection string
 
 ```
 npm install
 npx prisma init
 npx prisma db push
-node seed.js
 node app.js
 ```
 
