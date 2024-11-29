@@ -8,6 +8,23 @@ const PORT = 3000;
 
 app.use(bodyParser.json());
 
+// Endpoint to get all products where stock is under the threshold
+app.get("/products/low-stock", async (req, res) => {
+  const threshold = parseInt(req.query.threshold) || 10; // Default threshold value is 10
+  try {
+    const lowStockProducts = await prisma.products.findMany({
+      where: {
+        stock: { lt: threshold },
+      },
+    });
+    res.json(lowStockProducts);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching low-stock products" });
+  }
+});
+
 // --- Roles ---
 app.get("/roles", async (req, res) => {
   const roles = await prisma.roles.findMany();

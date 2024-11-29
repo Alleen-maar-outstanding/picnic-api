@@ -8,13 +8,14 @@ datasource db {
 }
 
 model products {
-  id         Int      @id @default(autoincrement())
-  name       String
-  price      Float
-  stock      Int
-  treshold   Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  id               Int      @id @default(autoincrement())
+  name             String
+  price            Float
+  stock            Int
+  treshold         Int
+  storage_location String   @default("none")
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
 
   orders_products orders_products[]
 }
