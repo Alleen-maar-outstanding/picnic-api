@@ -7,30 +7,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model products {
-  id         Int      @id @default(autoincrement())
-  name       String
-  price      Float
+model product {
+  id            Int             @id @default(autoincrement())
+  name          String
+  price         Float
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  stock         stock[]
+  order_product order_product[]
+}
+
+model stock {
+  product_id Int @id
   stock      Int
   treshold   Int
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
 
-  orders_products orders_products[]
+  product product @relation(fields: [product_id], references: [id])
 }
 
-model orders_products {
-  orders_id   Int
+model order_product {
   products_id Int
+  orders_id   Int
   quantity    Int
 
-  order   orders   @relation(fields: [orders_id], references: [id])
-  product products @relation(fields: [products_id], references: [id])
+  product product @relation(fields: [products_id], references: [id])
+  order   order   @relation(fields: [orders_id], references: [id])
 
-  @@id([orders_id, products_id])
+  @@id([products_id, orders_id])
 }
 
-model orders {
+model order {
   id            Int      @id @default(autoincrement())
   employee_id   Int
   user_id       Int
@@ -38,25 +44,26 @@ model orders {
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 
-  employee        employees         @relation(fields: [employee_id], references: [id])
-  user            users             @relation(fields: [user_id], references: [id])
-  orders_products orders_products[]
+  employee      employee        @relation(fields: [employee_id], references: [id])
+  client        client          @relation(fields: [user_id], references: [id])
+  order_product order_product[]
 }
 
-model employees {
+model employee {
   id         Int      @id @default(autoincrement())
+  role_id    Int
   firstname  String
   lastname   String
   password   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  orders orders[]
+  role   role    @relation(fields: [role_id], references: [id])
+  orders order[]
 }
 
-model users {
+model client {
   id         Int      @id @default(autoincrement())
-  role_id    Int
   firstname  String
   lastname   String
   password   String
@@ -64,15 +71,14 @@ model users {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  role   roles    @relation(fields: [role_id], references: [id])
-  orders orders[]
+  orders order[]
 }
 
-model roles {
+model role {
   id         Int      @id @default(autoincrement())
   name       String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  users users[]
+  employees employee[]
 }
